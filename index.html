@@ -496,30 +496,13 @@
             </div>
             
             <div class="lms-content">
-                <h2 style="color: white; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px;">General Discussion</h2>
-                
-                <div class="thread-box">
-                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                        <div style="width:40px; height:40px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:black; font-weight:bold;">M</div>
-                        <div>
-                            <div style="color: var(--accent); font-weight: bold;">Madd3e_Official</div>
-                            <div style="font-size: 0.8rem; color: #666;">Today at 9:00 AM</div>
-                        </div>
-                    </div>
-                    <p style="color: #ddd;">Just uploaded the stems for the remix contest. Check the resources tab!</p>
-                </div>
-
-                <div class="thread-box">
-                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                        <div style="width:40px; height:40px; background:var(--secondary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">T</div>
-                        <div>
-                            <div style="color: var(--accent); font-weight: bold;">Talkbox_Tom</div>
-                            <div style="font-size: 0.8rem; color: #666;">Yesterday</div>
-                        </div>
-                    </div>
-                    <p style="color: #ddd;">Anyone know the chord progression for "I Can Make Ya"?</p>
-                </div>
-            </div>
+    <h2 style="color: white; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px;">General Discussion</h2>
+    
+    <div id="chat-container" style="height: 400px; overflow-y: auto; margin-bottom: 20px;">
+        </div>
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333;">
+        </div>
+</div>
 		<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333;">
     <div class="form-group">
         <textarea id="chat-input" class="form-textarea" placeholder="Type a message..." style="min-height: 80px;"></textarea>
@@ -552,14 +535,18 @@
 
 <script>
     // --- 1. CONFIGURATION ---
-   
     const SUPABASE_URL = 'https://emqrmhnnvdjwladrbpbw.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_skn3jkXBlXr5tuX-CDkr1g_JVrPvxN9';
     
-    const supabase = showSection('landing') ? null : supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // IMPORTANT: Replace this with the "anon" key from Supabase Dashboard -> Settings -> API.
+    // It should start with "eyJ..."
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtcXJtaG5udmRqd2xhZHJicGJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjM5NTAsImV4cCI6MjA4MzczOTk1MH0.VIwEyNakJ85lWtbIiRBHwsI3eZPUvZANC8mXt1bkvNA'; 
+    
+    // Initialize the client. We name it 'sbClient' to avoid conflicting with the library name.
+    const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // --- 2. NAVIGATION & UI LOGIC ---
     function showSection(sectionId) {
+        // Hide all pages
         document.getElementById('landing-page').classList.add('hidden');
         document.getElementById('community-page').classList.add('hidden');
         
@@ -567,7 +554,7 @@
             document.getElementById('landing-page').classList.remove('hidden');
             window.scrollTo(0,0);
         } else if(sectionId === 'community') {
-            // Check if user is logged in before showing
+            // Check session before showing community
             checkSession(); 
         }
     }
@@ -577,14 +564,12 @@
     function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
 
     // --- 3. AUTHENTICATION LOGIC ---
-    
-    // Sign Up (Collects Email for your Database)
     async function handleSignUp() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-message');
 
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await sbClient.auth.signUp({ email, password });
 
         if (error) {
             msg.style.color = 'var(--secondary)';
@@ -595,13 +580,12 @@
         }
     }
 
-    // Login
     async function handleLogin() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-message');
 
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
 
         if (error) {
             msg.style.color = 'var(--secondary)';
@@ -613,29 +597,28 @@
     }
 
     async function checkSession() {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await sbClient.auth.getSession();
         if (session) {
             showMessageBoard(session.user);
         } else {
-            // If not logged in, force login modal
             openLoginModal();
         }
     }
 
     // --- 4. MESSAGE BOARD LOGIC ---
-    
     function showMessageBoard(user) {
         document.getElementById('landing-page').classList.add('hidden');
         document.getElementById('community-page').classList.remove('hidden');
         
-        // Update Sidebar
-        document.getElementById('user-display-name').innerText = user.email.split('@')[0]; // Use part of email as name
+        // Update Sidebar Name
+        const displayName = user.email ? user.email.split('@')[0] : "Member";
+        document.getElementById('user-display-name').innerText = displayName;
 
         // Load Messages
         fetchMessages();
         
         // Subscribe to NEW messages (Realtime)
-        supabase
+        sbClient
         .channel('public:messages')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
             appendMessageToUI(payload.new);
@@ -643,40 +626,44 @@
         .subscribe();
     }
 
-    // Get Messages from Database
     async function fetchMessages() {
-        const { data, error } = await supabase
+        const { data, error } = await sbClient
             .from('messages')
             .select('*')
             .order('created_at', { ascending: true });
             
         const container = document.getElementById('chat-container');
-        container.innerHTML = ''; // Clear hardcoded messages
+        container.innerHTML = ''; // Clear old messages
         
         if(data) {
             data.forEach(msg => appendMessageToUI(msg));
+        } else if (error) {
+            console.error("Error fetching messages:", error);
         }
     }
 
-    // Send Message
     async function sendMessage() {
         const input = document.getElementById('chat-input');
         const content = input.value;
         if(!content) return;
 
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await sbClient.auth.getUser();
 
-        // Save to Database
-        await supabase.from('messages').insert([
-            { content: content, email: user.email }
-        ]);
-
-        input.value = ''; // Clear input
+        if(user) {
+            await sbClient.from('messages').insert([
+                { content: content, email: user.email }
+            ]);
+            input.value = ''; // Clear input
+        } else {
+            alert("You must be logged in to post.");
+        }
     }
 
-    // Helper: Draw message on screen
     function appendMessageToUI(msg) {
         const container = document.getElementById('chat-container');
+        // Handle cases where email might be missing or msg is null
+        if (!msg || !msg.email) return;
+
         const name = msg.email.split('@')[0];
         const initial = name.charAt(0).toUpperCase();
         
@@ -693,7 +680,7 @@
             </div>
         `;
         container.insertAdjacentHTML('beforeend', html);
-        container.scrollTop = container.scrollHeight; // Auto scroll to bottom
+        container.scrollTop = container.scrollHeight; 
     }
 </script>
 </body>
