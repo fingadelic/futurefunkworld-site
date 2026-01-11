@@ -285,6 +285,8 @@
             .lms-sidebar { display: none; }
         }
     </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -518,58 +520,181 @@
                     <p style="color: #ddd;">Anyone know the chord progression for "I Can Make Ya"?</p>
                 </div>
             </div>
+		<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333;">
+    <div class="form-group">
+        <textarea id="chat-input" class="form-textarea" placeholder="Type a message..." style="min-height: 80px;"></textarea>
+    </div>
+    <button onclick="sendMessage()" class="btn btn-primary">Post Message</button>
+</div>
         </div>
     </div>
 
     <div id="login-modal" class="modal-overlay">
-        <div class="login-modal-box">
-            <div class="close-modal" onclick="closeLoginModal()">&times;</div>
-            <h3 style="color: var(--primary); margin-bottom: 10px;">Restricted Access</h3>
-            <p style="color: #ccc; margin-bottom: 30px; font-size: 0.9rem;">Enter passphrase to enter The Hub.</p>
-            <div class="form-group"><input type="password" id="community-pass" class="form-input" placeholder="Passphrase" style="text-align: center;"></div>
-            <button onclick="attemptLogin()" class="btn btn-primary" style="width: 100%;">Authenticate</button>
-            <p id="login-error" class="hidden" style="color: var(--secondary); margin-top: 15px; font-size: 0.9rem;">Access Denied. Hint: "funk"</p>
+    <div class="login-modal-box">
+        <div class="close-modal" onclick="closeLoginModal()">&times;</div>
+        <h3 style="color: var(--primary); margin-bottom: 10px;">IDENTIFY YOURSELF</h3>
+        <p style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;">Join the database to access the hub.</p>
+        
+        <div class="form-group">
+            <input type="email" id="auth-email" class="form-input" placeholder="Email Address">
         </div>
+        <div class="form-group">
+            <input type="password" id="auth-password" class="form-input" placeholder="Password">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button onclick="handleLogin()" class="btn btn-primary" style="flex:1;">Log In</button>
+            <button onclick="handleSignUp()" class="btn btn-secondary" style="flex:1;">Sign Up</button>
+        </div>
+        <p id="auth-message" style="margin-top: 15px; font-size: 0.8rem; color: var(--accent);"></p>
     </div>
+</div>
 
-    <script>
-        // NAVIGATION
-        function showSection(sectionId) {
-            document.getElementById('landing-page').classList.add('hidden');
-            document.getElementById('community-page').classList.add('hidden');
+<script>
+    // --- 1. CONFIGURATION ---
+   
+    const SUPABASE_URL = 'https://emqrmhnnvdjwladrbpbw.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_skn3jkXBlXr5tuX-CDkr1g_JVrPvxN9';
+    
+    const supabase = showSection('landing') ? null : supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // --- 2. NAVIGATION & UI LOGIC ---
+    function showSection(sectionId) {
+        document.getElementById('landing-page').classList.add('hidden');
+        document.getElementById('community-page').classList.add('hidden');
+        
+        if(sectionId === 'landing') {
+            document.getElementById('landing-page').classList.remove('hidden');
+            window.scrollTo(0,0);
+        } else if(sectionId === 'community') {
+            // Check if user is logged in before showing
+            checkSession(); 
+        }
+    }
+    
+    function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+    function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+    function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
+
+    // --- 3. AUTHENTICATION LOGIC ---
+    
+    // Sign Up (Collects Email for your Database)
+    async function handleSignUp() {
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        const msg = document.getElementById('auth-message');
+
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = error.message;
+        } else {
+            msg.style.color = 'var(--accent)';
+            msg.innerText = "Check your email for the confirmation link!";
+        }
+    }
+
+    // Login
+    async function handleLogin() {
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        const msg = document.getElementById('auth-message');
+
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = error.message;
+        } else {
+            closeLoginModal();
+            showMessageBoard(data.user);
+        }
+    }
+
+    async function checkSession() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            showMessageBoard(session.user);
+        } else {
+            // If not logged in, force login modal
+            openLoginModal();
+        }
+    }
+
+    // --- 4. MESSAGE BOARD LOGIC ---
+    
+    function showMessageBoard(user) {
+        document.getElementById('landing-page').classList.add('hidden');
+        document.getElementById('community-page').classList.remove('hidden');
+        
+        // Update Sidebar
+        document.getElementById('user-display-name').innerText = user.email.split('@')[0]; // Use part of email as name
+
+        // Load Messages
+        fetchMessages();
+        
+        // Subscribe to NEW messages (Realtime)
+        supabase
+        .channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+            appendMessageToUI(payload.new);
+        })
+        .subscribe();
+    }
+
+    // Get Messages from Database
+    async function fetchMessages() {
+        const { data, error } = await supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true });
             
-            if(sectionId === 'landing') {
-                document.getElementById('landing-page').classList.remove('hidden');
-                document.getElementById('nav-login-btn').innerText = "Log In";
-                document.getElementById('nav-login-btn').onclick = openLoginModal;
-                window.scrollTo(0,0);
-            } else if(sectionId === 'community') {
-                document.getElementById('community-page').classList.remove('hidden');
-                document.getElementById('nav-login-btn').innerText = "Log Out";
-                document.getElementById('nav-login-btn').onclick = function(){ showSection('landing'); };
-                window.scrollTo(0,0);
-            }
+        const container = document.getElementById('chat-container');
+        container.innerHTML = ''; // Clear hardcoded messages
+        
+        if(data) {
+            data.forEach(msg => appendMessageToUI(msg));
         }
-        function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+    }
 
-        // MODAL LOGIC
-        function openLoginModal() { 
-            document.getElementById('login-modal').style.display = 'flex'; 
-            document.getElementById('login-error').classList.add('hidden');
-            document.getElementById('community-pass').value = '';
-        }
-        function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
+    // Send Message
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const content = input.value;
+        if(!content) return;
 
-        function attemptLogin() {
-            const pass = document.getElementById('community-pass').value.toLowerCase();
-            if(pass === 'funk') {
-                closeLoginModal(); 
-                showSection('community');
-                alert("Welcome to the Underground.");
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-            }
-        }
-    </script>
+        const { data: { user } } = await supabase.auth.getUser();
+
+        // Save to Database
+        await supabase.from('messages').insert([
+            { content: content, email: user.email }
+        ]);
+
+        input.value = ''; // Clear input
+    }
+
+    // Helper: Draw message on screen
+    function appendMessageToUI(msg) {
+        const container = document.getElementById('chat-container');
+        const name = msg.email.split('@')[0];
+        const initial = name.charAt(0).toUpperCase();
+        
+        const html = `
+            <div class="thread-box">
+                <div style="display: flex; gap: 15px; margin-bottom: 5px;">
+                    <div style="width:40px; height:40px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:black; font-weight:bold;">${initial}</div>
+                    <div>
+                        <div style="color: var(--accent); font-weight: bold;">${name}</div>
+                        <div style="font-size: 0.8rem; color: #666;">Just now</div>
+                    </div>
+                </div>
+                <p style="color: #ddd;">${msg.content}</p>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+        container.scrollTop = container.scrollHeight; // Auto scroll to bottom
+    }
+</script>
 </body>
 </html>
