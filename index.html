@@ -196,29 +196,42 @@
         .artist-img-box:hover img { transform: scale(1.05); }
 
         /* PLAYLIST SECTION */
-        .playlist-card {
-            background: var(--bg-card);
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-        .playlist-card::before {
-            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, var(--secondary), var(--primary));
-            z-index: -1; border-radius: 16px;
-        }
-        .track-list { margin-top: 30px; }
-        .track-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 15px; border-bottom: 1px solid #333; transition: 0.3s;
-        }
-        .track-item:hover { background: rgba(255,255,255,0.05); padding-left: 20px; }
-        .track-info { display: flex; align-items: center; gap: 15px; }
-        .track-num { color: var(--primary); font-family: var(--font-head); font-weight: bold; }
+       	/* --- PLAYLIST SECTION --- */
+.playlist-card {
+    background: var(--bg-card);
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
 
+/* This creates the glowing border effect */
+.playlist-card::before {
+    content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(45deg, var(--secondary), var(--primary));
+    z-index: -1; border-radius: 16px;
+}
+
+/* NEW: Makes the YouTube video responsive */
+.video-responsive {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+}
+
+.video-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
         /* COMMUNITY HUB PREVIEW (New Section) */
         .community-preview {
             background: linear-gradient(90deg, #120024, #1f0a33);
@@ -338,7 +351,7 @@
 </div>
                     <div class="artist-content">
                         <h2 style="color: white; font-size: 3rem;">Hyper <span style="color: var(--accent);">G</span></h2>
-                        <h4 style="color: var(--text-muted); margin-bottom: 20px;">The New Anthem</h4>
+                        <h4 style="color: var(--text-muted); margin-bottom: 20px;">A true Future Funk Anthem</h4>
                         <p style="color: #ccc; margin-bottom: 30px; line-height: 1.8;">
                             Madd3e hits hard with a bass-heavy banger that bridges the gap between G-Funk and Cyberpunk. 
                             "Hyper G" utilizes a head knocking drums and funky synth bass, combined with 8 bit video game-esque sounds to create a groove that is both nostalgic and unmistakably futuristic.
@@ -352,65 +365,34 @@
             </div>
         </section>
 
-        <section id="playlist" class="section-padding" style="background: #0f001e;">
-            <div class="container">
-                <div class="text-center" style="margin-bottom: 50px;">
-                    <i class="fas fa-cassette-tape" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-                    <h2>Top Future <span class="highlight-pink">Funk</span></h2>
-                    <p style="color: var(--text-muted);">Curated selections from our world.</p>
-                </div>
+<section id="playlist" class="section-padding" style="background: #0f001e;">
+    <div class="container">
+        <div class="text-center" style="margin-bottom: 50px;">
+            <i class="fas fa-compact-disc fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <h2>Future Funk <span class="highlight-pink">Radio</span></h2>
+            <p style="color: var(--text-muted);">Curated selections from the underground.</p>
+        </div>
 
-                <div class="playlist-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #444; padding-bottom: 20px;">
-                        <h3 style="color:white; margin:0;">FFW Monthly Mix</h3>
-                        <a href="https://www.youtube.com" target="_blank" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.8rem;"><i class="fab fa-youtube"></i> Open Playlist</a>
-                    </div>
-                    
-                    <div class="track-list">
-                        <div class="track-item">
-                            <div class="track-info">
-                                <span class="track-num">01</span>
-                                <div>
-                                    <div style="color: white; font-weight: bold;">Winning</div>
-                                    <div style="font-size: 0.8rem; color: #888;">Fingazz</div>
-                                </div>
-                            </div>
-                            <i class="fas fa-play" style="color: var(--accent); cursor: pointer;"></i>
-                        </div>
-                        <div class="track-item">
-                            <div class="track-info">
-                                <span class="track-num">02</span>
-                                <div>
-                                    <div style="color: white; font-weight: bold;">Cruisin'</div>
-                                    <div style="font-size: 0.8rem; color: #888;">Madd3e</div>
-                                </div>
-                            </div>
-                            <i class="fas fa-play" style="color: var(--accent); cursor: pointer;"></i>
-                        </div>
-                        <div class="track-item">
-                            <div class="track-info">
-                                <span class="track-num">03</span>
-                                <div>
-                                    <div style="color: white; font-weight: bold;">Cyber Boogie</div>
-                                    <div style="font-size: 0.8rem; color: #888;">Beatslaya</div>
-                                </div>
-                            </div>
-                            <i class="fas fa-play" style="color: var(--accent); cursor: pointer;"></i>
-                        </div>
-                        <div class="track-item">
-                            <div class="track-info">
-                                <span class="track-num">04</span>
-                                <div>
-                                    <div style="color: white; font-weight: bold;">Neon Nights</div>
-                                    <div style="font-size: 0.8rem; color: #888;">Future Funk All-Stars</div>
-                                </div>
-                            </div>
-                            <i class="fas fa-play" style="color: var(--accent); cursor: pointer;"></i>
-                        </div>
-                    </div>
-                </div>
+        <div class="playlist-card" style="padding: 20px;">
+            <div class="video-responsive">
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/6wr-V3TinNM?list=PLzW7YCedfHjefx36xUB0Dmx07P05zCr3G" 
+                    title="Future Funk Playlist" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
             </div>
-        </section>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://www.youtube.com/playlist?list=PLzW7YCedfHjefx36xUB0Dmx07P05zCr3G" target="_blank" class="btn btn-secondary" style="font-size: 0.8rem; padding: 10px 25px;">
+                    <i class="fab fa-youtube"></i> Open in YouTube
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
         <section id="community-hub" class="section-padding community-preview">
             <div class="container text-center">
