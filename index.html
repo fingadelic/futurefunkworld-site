@@ -363,10 +363,12 @@
                             Madd3e hits hard with a bass-heavy banger that bridges the gap between G-Funk and Cyberpunk. 
                             "Hyper G" utilizes a head knocking drums and funky synth bass, combined with 8 bit video game-esque sounds to create a groove that is both nostalgic and unmistakably futuristic.
                         </p>
-                        <div style="display:flex; gap: 15px;">
-                            <button class="btn btn-secondary">Artist Profile</button>
-                            <button class="btn btn-secondary" style="border-color: #333; color: #fff;"><i class="fas fa-share-alt"></i></button>
-                        </div>
+                       <div style="display:flex; gap: 15px;">
+                             <button onclick="openArtistModal()" class="btn btn-secondary">Artist Profile</button>
+    
+                            <button onclick="shareSite()" class="btn btn-secondary" style="border-color: #333; color: #fff;">
+                             <i class="fas fa-share-alt"></i>
+                            </button>
                     </div>
                 </div>
             </div>
@@ -545,6 +547,36 @@
         </div>
 
         <p id="auth-message" style="margin-top: 15px; font-size: 0.8rem; color: var(--accent);"></p>
+    </div>
+</div>
+	<div id="artist-modal" class="modal-overlay">
+    <div class="login-modal-box" style="text-align: left; max-width: 500px;">
+        <div class="close-modal" onclick="closeArtistModal()">&times;</div>
+        
+        <div style="display:flex; gap: 20px; align-items:center; margin-bottom: 20px;">
+            <img src="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/madd3e-image-1.jpg" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;">
+            <div>
+                <h2 style="font-size: 1.5rem; margin: 0; color: white;">Madd3e</h2>
+                <div style="color: var(--accent); font-size: 0.9rem;">Rome, Italy 🇮🇹</div>
+            </div>
+        </div>
+
+        <p style="color: #ccc; margin-bottom: 25px; font-size: 0.9rem; line-height: 1.6;">
+            A pioneer of the modern funk sound, Madd3e blends high-energy talkbox leads with thumping 808s. With releases on major funk labels, he has defined the "Cyber Funk" aesthetic.
+        </p>
+
+        <h4 style="color: var(--primary); font-size: 0.8rem; margin-bottom: 10px;">TOP LINKS</h4>
+        <div style="display: grid; gap: 10px;">
+            <a href="https://soundcloud.com/madd3e" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px;">
+                <i class="fab fa-soundcloud"></i> SoundCloud
+            </a>
+            <a href="https://open.spotify.com/artist/madd3e" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px; border-color: #1DB954; color: #1DB954;">
+                <i class="fab fa-spotify"></i> Spotify
+            </a>
+            <a href="https://instagram.com/madd3e" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px; border-color: #E1306C; color: #E1306C;">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+        </div>
     </div>
 </div>
 </div>
@@ -819,6 +851,40 @@
         `;
         container.insertAdjacentHTML('beforeend', html);
         container.scrollTop = container.scrollHeight; 
+        // --- ARTIST MODAL FUNCTIONS ---
+    function openArtistModal() {
+        document.getElementById('artist-modal').style.display = 'flex';
+    }
+
+    function closeArtistModal() {
+        document.getElementById('artist-modal').style.display = 'none';
+    }
+
+    // --- SHARE FUNCTION ---
+    async function shareSite() {
+        const shareData = {
+            title: 'Future Funk World',
+            text: 'Check out the ultimate hub for Future Funk music!',
+            url: window.location.href
+        };
+
+        // 1. Try Native Mobile Share (Works on phones)
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.log('Share canceled');
+            }
+        } 
+        // 2. Fallback: Copy to Clipboard (Works on Desktop)
+        else {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                alert("URL copied to clipboard! Share the funk. 💿");
+            } catch (err) {
+                alert("Could not copy link manually.");
+            }
+        }
     }
 </script>
 </body>
