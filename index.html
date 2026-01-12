@@ -520,12 +520,14 @@
     <div id="login-modal" class="modal-overlay">
     <div class="login-modal-box">
         <div class="close-modal" onclick="closeLoginModal()">&times;</div>
-        <h3 style="color: var(--primary); margin-bottom: 10px;">IDENTIFY YOURSELF</h3>
-        <p style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;">Join the community to access the hub.</p>
         
-        <div class="form-group">
-        <input type="text" id="auth-username" class="form-input" placeholder="Choose a Username">
-    </div>
+        <h3 id="auth-title" style="color: var(--primary); margin-bottom: 10px;">ACCESS GRID</h3>
+        <p id="auth-subtitle" style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;">Enter credentials to connect.</p>
+        
+        <div id="username-container" class="form-group" style="display:none;">
+            <input type="text" id="auth-username" class="form-input" placeholder="Choose a Username">
+        </div>
+
         <div class="form-group">
             <input type="email" id="auth-email" class="form-input" placeholder="Email Address">
         </div>
@@ -533,12 +535,18 @@
             <input type="password" id="auth-password" class="form-input" placeholder="Password">
         </div>
 
-        <div style="display: flex; gap: 10px;">
-            <button onclick="handleLogin()" class="btn btn-primary" style="flex:1;">Log In</button>
-            <button onclick="handleSignUp()" class="btn btn-secondary" style="flex:1;">Sign Up</button>
+        <button id="auth-submit-btn" onclick="handleLogin()" class="btn btn-primary" style="width: 100%;">LOG IN</button>
+        
+        <div style="margin-top: 20px; font-size: 0.8rem; color: #888;">
+            <span id="auth-toggle-msg">First time here?</span>
+            <span onclick="toggleAuthMode()" style="color: var(--secondary); cursor: pointer; text-decoration: underline; margin-left: 5px; font-weight: bold;">
+                Initialize Protocol (Sign Up)
+            </span>
         </div>
+
         <p id="auth-message" style="margin-top: 15px; font-size: 0.8rem; color: var(--accent);"></p>
     </div>
+</div>
 </div>
 
 <script>
@@ -563,22 +571,106 @@
     }
     
     function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
-    function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
-    function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
-
+    function openLoginModal() { 
+        document.getElementById('login-modal').style.display = 'flex'; 
+        
+        // Force reset to Login Mode every time it opens
+        isLoginMode = false; // Set to false so the toggle function flips it to true
+        toggleAuthMode();    // Run the toggle to set UI to "Log In" default
+    }
+    
     // --- 3. AUTHENTICATION LOGIC ---
+    // --- UPDATED STRICT SIGN UP ---
     async function handleSignUp() {
-        const email = document.getElementById('auth-email').value;
+        // 1. Get all the values from the boxes
+        const username = document.getElementById('auth-username').value.trim(); // .trim() removes accidental spaces
+        const email = document.getElementById('auth-email').value.trim();
         const password = document.getElementById('auth-password').value;
-        // NEW: Get the username
-        const username = document.getElementById('auth-username').value; 
         const msg = document.getElementById('auth-message');
 
-        if(!username) {
+        // 2. THE BOUNCERS (Validation Checks)
+        
+        // Check Username
+        if (!username) {
             msg.style.color = 'var(--secondary)';
-            msg.innerText = "Please choose a username.";
+            msg.innerText = "⚠️ You must create a Username to join.";
+            document.getElementById('auth-username').focus(); // Put cursor in the box
+            return; // STOP HERE. Do not talk to Supabase.
+        }
+
+        // Check Email
+        if (!email) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "⚠️ Email address is required.";
             return;
         }
+
+        // Check Password Length (Good practice)
+        if (!password || password.length < 6) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "⚠️ Password must be at least 6 characters.";
+            return;
+        }
+
+        // 3. If we passed the bouncers, NOW we talk to Supabase
+        const { data, error } = await sbClient.auth.signUp({ 
+            email, 
+            password,
+            options: {
+                data: { username: username } // This saves the username forever
+            }
+        });
+
+        // 4. Handle the result
+        if (error) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "Error: " + error.message;
+        } else {
+            msg.style.color = 'var(--accent)';
+            msg.innerText = "Success! Check your email to confirm.";
+        }
+    }
+// --- 5. UI TOGGLE LOGIC ---
+    let isLoginMode = true;
+
+    function toggleAuthMode() {
+        isLoginMode = !isLoginMode; // Flip the switch
+        
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const userContainer = document.getElementById('username-container');
+        const btn = document.getElementById('auth-submit-btn');
+        const toggleMsg = document.getElementById('auth-toggle-msg');
+        const toggleLink = document.querySelector('span[onclick="toggleAuthMode()"]');
+        const msg = document.getElementById('auth-message');
+
+        // Clear any old error messages
+        msg.innerText = "";
+
+        if (isLoginMode) {
+            // SWITCH TO LOG IN MODE
+            title.innerText = "ACCESS GRID";
+            subtitle.innerText = "Enter credentials to connect.";
+            userContainer.style.display = "none"; // Hide Username
+            
+            btn.innerText = "LOG IN";
+            btn.onclick = handleLogin; // Set button to call Login function
+            
+            toggleMsg.innerText = "First time here?";
+            toggleLink.innerText = "Initialize Protocol (Sign Up)";
+        } else {
+            // SWITCH TO SIGN UP MODE
+            title.innerText = "NEW RECRUIT";
+            subtitle.innerText = "Create your digital identity.";
+            userContainer.style.display = "block"; // Show Username
+            
+            btn.innerText = "INITIATE SIGN UP";
+            btn.onclick = handleSignUp; // Set button to call SignUp function
+            
+            toggleMsg.innerText = "Already have an account?";
+            toggleLink.innerText = "Return to Log In";
+        }
+    }
 
         // NEW: We save the username in the user's "metadata"
         const { data, error } = await sbClient.auth.signUp({ 
@@ -598,19 +690,49 @@
         }
     }
 
+    // --- UPDATED STRICT LOGIN ---
     async function handleLogin() {
-        const email = document.getElementById('auth-email').value;
+        // 1. Get values
+        const email = document.getElementById('auth-email').value.trim();
         const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-message');
 
+        // 2. THE BOUNCERS (Validation Checks)
+        
+        // Check Email
+        if (!email) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "⚠️ Please enter your email.";
+            document.getElementById('auth-email').focus();
+            return;
+        }
+
+        // Check Password
+        if (!password) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "⚠️ Please enter your password.";
+            document.getElementById('auth-password').focus();
+            return;
+        }
+
+        // 3. Talk to Supabase
         const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
 
+        // 4. Handle Result
         if (error) {
             msg.style.color = 'var(--secondary)';
-            msg.innerText = error.message;
+            // Supabase gives clear errors like "Invalid login credentials"
+            msg.innerText = "Error: " + error.message;
         } else {
-            closeLoginModal();
-            showMessageBoard(data.user);
+            // Success!
+            msg.style.color = 'var(--accent)';
+            msg.innerText = "Access Granted.";
+            
+            // Wait a split second so they see the success message, then close modal
+            setTimeout(() => {
+                closeLoginModal();
+                showMessageBoard(data.user);
+            }, 500);
         }
     }
 
