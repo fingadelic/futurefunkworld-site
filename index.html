@@ -552,8 +552,8 @@
 <script>
     // --- 1. CONFIGURATION ---
     const SUPABASE_URL = 'https://emqrmhnnvdjwladrbpbw.supabase.co';
-    // KEEP YOUR ANON KEY HERE
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtcXJtaG5udmRqd2xhZHJicGJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjM5NTAsImV4cCI6MjA4MzczOTk1MH0.VIwEyNakJ85lWtbIiRBHwsI3eZPUvZANC8mXt1bkvNA'; 
+    // REPLACE THIS WITH YOUR ACTUAL KEY IF NEEDED
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; 
     
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -571,66 +571,18 @@
     }
     
     function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+    
     function openLoginModal() { 
         document.getElementById('login-modal').style.display = 'flex'; 
         
-        // Force reset to Login Mode every time it opens
-        isLoginMode = false; // Set to false so the toggle function flips it to true
-        toggleAuthMode();    // Run the toggle to set UI to "Log In" default
+        // Reset to "Log In" mode every time it opens
+        isLoginMode = false; 
+        toggleAuthMode();    
     }
-    
-    // --- 3. AUTHENTICATION LOGIC ---
-    // --- UPDATED STRICT SIGN UP ---
-    async function handleSignUp() {
-        // 1. Get all the values from the boxes
-        const username = document.getElementById('auth-username').value.trim(); // .trim() removes accidental spaces
-        const email = document.getElementById('auth-email').value.trim();
-        const password = document.getElementById('auth-password').value;
-        const msg = document.getElementById('auth-message');
 
-        // 2. THE BOUNCERS (Validation Checks)
-        
-        // Check Username
-        if (!username) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ You must create a Username to join.";
-            document.getElementById('auth-username').focus(); // Put cursor in the box
-            return; // STOP HERE. Do not talk to Supabase.
-        }
+    function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
 
-        // Check Email
-        if (!email) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Email address is required.";
-            return;
-        }
-
-        // Check Password Length (Good practice)
-        if (!password || password.length < 6) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Password must be at least 6 characters.";
-            return;
-        }
-
-        // 3. If we passed the bouncers, NOW we talk to Supabase
-        const { data, error } = await sbClient.auth.signUp({ 
-            email, 
-            password,
-            options: {
-                data: { username: username } // This saves the username forever
-            }
-        });
-
-        // 4. Handle the result
-        if (error) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "Error: " + error.message;
-        } else {
-            msg.style.color = 'var(--accent)';
-            msg.innerText = "Success! Check your email to confirm.";
-        }
-    }
-// --- 5. UI TOGGLE LOGIC ---
+    // --- 3. TOGGLE UI LOGIC (Log In vs Sign Up) ---
     let isLoginMode = true;
 
     function toggleAuthMode() {
@@ -645,34 +597,71 @@
         const msg = document.getElementById('auth-message');
 
         // Clear any old error messages
-        msg.innerText = "";
+        if(msg) msg.innerText = "";
 
         if (isLoginMode) {
             // SWITCH TO LOG IN MODE
-            title.innerText = "ACCESS GRID";
-            subtitle.innerText = "Enter credentials to connect.";
-            userContainer.style.display = "none"; // Hide Username
+            if(title) title.innerText = "ACCESS GRID";
+            if(subtitle) subtitle.innerText = "Enter credentials to connect.";
+            if(userContainer) userContainer.style.display = "none"; 
             
-            btn.innerText = "LOG IN";
-            btn.onclick = handleLogin; // Set button to call Login function
+            if(btn) {
+                btn.innerText = "LOG IN";
+                // IMPORTANT: We assign the function, we don't call it
+                btn.onclick = handleLogin; 
+            }
             
-            toggleMsg.innerText = "First time here?";
-            toggleLink.innerText = "Initialize Protocol (Sign Up)";
+            if(toggleMsg) toggleMsg.innerText = "First time here?";
+            if(toggleLink) toggleLink.innerText = "Initialize Protocol (Sign Up)";
         } else {
             // SWITCH TO SIGN UP MODE
-            title.innerText = "NEW RECRUIT";
-            subtitle.innerText = "Create your digital identity.";
-            userContainer.style.display = "block"; // Show Username
+            if(title) title.innerText = "NEW RECRUIT";
+            if(subtitle) subtitle.innerText = "Create your digital identity.";
+            if(userContainer) userContainer.style.display = "block"; 
             
-            btn.innerText = "INITIATE SIGN UP";
-            btn.onclick = handleSignUp; // Set button to call SignUp function
+            if(btn) {
+                btn.innerText = "INITIATE SIGN UP";
+                btn.onclick = handleSignUp; 
+            }
             
-            toggleMsg.innerText = "Already have an account?";
-            toggleLink.innerText = "Return to Log In";
+            if(toggleMsg) toggleMsg.innerText = "Already have an account?";
+            if(toggleLink) toggleLink.innerText = "Return to Log In";
         }
     }
 
-        // NEW: We save the username in the user's "metadata"
+    // --- 4. AUTHENTICATION LOGIC (STRICT) ---
+    
+    // Note the 'async' keyword here. This fixes your syntax error.
+    async function handleSignUp() {
+        const usernameInput = document.getElementById('auth-username');
+        const emailInput = document.getElementById('auth-email');
+        const passwordInput = document.getElementById('auth-password');
+        const msg = document.getElementById('auth-message');
+
+        const username = usernameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        // BOUNCERS (Validation)
+        if (!username) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "⚠️ You must create a Username.";
+            usernameInput.focus();
+            return;
+        }
+        if (!email) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "⚠️ Email is required.";
+            emailInput.focus();
+            return;
+        }
+        if (!password || password.length < 6) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "⚠️ Password must be 6+ chars.";
+            passwordInput.focus();
+            return;
+        }
+
         const { data, error } = await sbClient.auth.signUp({ 
             email, 
             password,
@@ -683,52 +672,43 @@
 
         if (error) {
             msg.style.color = 'var(--secondary)';
-            msg.innerText = error.message;
+            msg.innerText = "Error: " + error.message;
         } else {
             msg.style.color = 'var(--accent)';
-            msg.innerText = "Check your email for the confirmation link!";
+            msg.innerText = "Success! Check your email.";
         }
     }
 
-    // --- UPDATED STRICT LOGIN ---
+    // Note the 'async' keyword here too.
     async function handleLogin() {
-        // 1. Get values
-        const email = document.getElementById('auth-email').value.trim();
-        const password = document.getElementById('auth-password').value;
+        const emailInput = document.getElementById('auth-email');
+        const passwordInput = document.getElementById('auth-password');
         const msg = document.getElementById('auth-message');
 
-        // 2. THE BOUNCERS (Validation Checks)
-        
-        // Check Email
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
         if (!email) {
             msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Please enter your email.";
-            document.getElementById('auth-email').focus();
+            msg.innerText = "⚠️ Enter your email.";
+            emailInput.focus();
             return;
         }
-
-        // Check Password
         if (!password) {
             msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Please enter your password.";
-            document.getElementById('auth-password').focus();
+            msg.innerText = "⚠️ Enter your password.";
+            passwordInput.focus();
             return;
         }
 
-        // 3. Talk to Supabase
         const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
 
-        // 4. Handle Result
         if (error) {
             msg.style.color = 'var(--secondary)';
-            // Supabase gives clear errors like "Invalid login credentials"
             msg.innerText = "Error: " + error.message;
         } else {
-            // Success!
             msg.style.color = 'var(--accent)';
             msg.innerText = "Access Granted.";
-            
-            // Wait a split second so they see the success message, then close modal
             setTimeout(() => {
                 closeLoginModal();
                 showMessageBoard(data.user);
@@ -745,12 +725,11 @@
         }
     }
 
-    // --- 4. MESSAGE BOARD LOGIC ---
+    // --- 5. MESSAGE BOARD LOGIC ---
     function showMessageBoard(user) {
         document.getElementById('landing-page').classList.add('hidden');
         document.getElementById('community-page').classList.remove('hidden');
         
-        // NEW: Try to get username from metadata, fallback to email if missing
         let displayName = "Member";
         if(user.user_metadata && user.user_metadata.username) {
             displayName = user.user_metadata.username;
@@ -758,7 +737,9 @@
             displayName = user.email.split('@')[0];
         }
         
-        document.getElementById('user-display-name').innerText = displayName;
+        // Ensure the Sidebar ID exists in HTML before setting text
+        const nameDisplay = document.getElementById('user-display-name');
+        if(nameDisplay) nameDisplay.innerText = displayName;
 
         fetchMessages();
         
@@ -777,7 +758,7 @@
             .order('created_at', { ascending: true });
             
         const container = document.getElementById('chat-container');
-        container.innerHTML = ''; 
+        if(container) container.innerHTML = ''; 
         
         if(data) {
             data.forEach(msg => appendMessageToUI(msg));
@@ -792,15 +773,18 @@
         const { data: { user } } = await sbClient.auth.getUser();
 
         if(user) {
-            // NEW: Get the username from the user's saved data
-            const username = user.user_metadata.username || user.email.split('@')[0];
+            let safeUsername = "Anonymous";
+            if (user.user_metadata && user.user_metadata.username) {
+                safeUsername = user.user_metadata.username;
+            } else if (user.email) {
+                safeUsername = user.email.split('@')[0];
+            }
 
-            // NEW: Send 'username' along with content and email
             const { error } = await sbClient.from('messages').insert([
                 { 
                     content: content, 
                     email: user.email,
-                    username: username 
+                    username: safeUsername 
                 }
             ]);
             
@@ -810,15 +794,14 @@
                 input.value = ''; 
             }
         } else {
-            alert("You must be logged in to post.");
+            alert("Login required.");
         }
     }
 
     function appendMessageToUI(msg) {
         const container = document.getElementById('chat-container');
-        if (!msg) return;
+        if (!container || !msg) return;
 
-        // NEW: Prefer the saved username, fallback to email if it's an old message
         const name = msg.username || (msg.email ? msg.email.split('@')[0] : "Anon");
         const initial = name.charAt(0).toUpperCase();
         
