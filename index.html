@@ -4,34 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FUTURE FUNK WORLD | The Real Future of Funk</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/favicon/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/favicon/favicon.svg">
-    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/favicon/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/favicon/apple-touch-icon.png">
-    <link rel="manifest" href="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/favicon/site.webmanifest">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💿</text></svg>">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@500;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
-            /* --- NEW THEME: "Sunset Gold & Indigo" --- */
-            --bg-dark: #120024; /* Deep Purple */
+            /* --- THEME: "Sunset Gold & Indigo" --- */
+            --bg-dark: #120024;
             --bg-card: #1f0a33;
-            
-            --primary: #FFAF00; /* Funk Gold */
-            --secondary: #FF0055; /* Hot Pink */
-            --accent: #00FF9D; /* Mint Green */
+            --primary: #FFAF00; 
+            --secondary: #FF0055; 
+            --accent: #00FF9D; 
             
             --text-main: #ffffff;
             --text-muted: #d4b3e3;
-            --font-head: 'Orbitron', sans-serif; /* More futuristic header font */
+            --font-head: 'Orbitron', sans-serif;
             --font-sub: 'Montserrat', sans-serif;
             --font-body: 'Roboto', sans-serif;
             
-            /* Revised Glow Effects */
             --box-glow: 0 0 20px rgba(255, 175, 0, 0.15), 0 0 40px rgba(255, 0, 85, 0.1);
             --text-glow: 0 0 10px rgba(255, 175, 0, 0.6);
-            --border-gradient: linear-gradient(45deg, var(--secondary), var(--primary));
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,21 +39,13 @@
             font-family: var(--font-body);
             line-height: 1.6;
             scroll-behavior: smooth;
-            /* New Background Gradient */
             background-image: linear-gradient(to bottom, #120024 0%, #000000 100%);
             overflow-x: hidden;
         }
 
         /* --- TYPOGRAPHY --- */
-        h1, h2, h3, h4, h5 {
-            font-family: var(--font-head);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 900;
-        }
-        
+        h1, h2, h3, h4, h5 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
         h2 { font-size: 2.5rem; text-shadow: 2px 2px 0px var(--secondary); }
-
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         ul { list-style: none; }
 
@@ -70,217 +59,88 @@
 
         /* --- BUTTONS --- */
         .btn {
-            display: inline-block;
-            padding: 14px 35px;
-            border-radius: 50px; /* Rounder buttons for this theme */
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            border: none;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-            font-family: var(--font-sub);
+            display: inline-block; padding: 14px 35px; border-radius: 50px; font-weight: 700; text-transform: uppercase;
+            cursor: pointer; border: none; font-size: 0.9rem; letter-spacing: 1px; transition: all 0.3s ease;
+            position: relative; overflow: hidden; text-align: center; font-family: var(--font-sub);
         }
-        .btn-primary {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 20px rgba(255, 175, 0, 0.4);
-        }
-        .btn-primary:hover {
-            background: #fff;
-            box-shadow: 0 0 30px #fff;
-            transform: translateY(-3px);
-        }
-        .btn-secondary {
-            background: transparent;
-            border: 2px solid var(--secondary);
-            color: var(--secondary);
-        }
-        .btn-secondary:hover {
-            background: var(--secondary);
-            color: white;
-            box-shadow: 0 0 30px var(--secondary);
-        }
+        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 0 20px rgba(255, 175, 0, 0.4); }
+        .btn-primary:hover { background: #fff; box-shadow: 0 0 30px #fff; transform: translateY(-3px); }
+        .btn-secondary { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); }
+        .btn-secondary:hover { background: var(--secondary); color: white; box-shadow: 0 0 30px var(--secondary); }
 
-        /* --- FORM STYLES --- */
+        /* --- FORMS --- */
         .form-group { margin-bottom: 25px; text-align: left; }
         .form-label { display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; }
-        .form-input, .form-textarea, .form-select {
+        .form-input, .form-textarea {
             width: 100%; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid #444;
             border-radius: 4px; color: white; font-family: var(--font-body); font-size: 1rem; transition: 0.3s;
         }
-        .form-input:focus, .form-textarea:focus {
-            border-color: var(--primary); outline: none; background: rgba(255,255,255,0.1);
-        }
+        .form-input:focus, .form-textarea:focus { border-color: var(--primary); outline: none; background: rgba(255,255,255,0.1); }
         .form-textarea { resize: vertical; min-height: 150px; }
 
-
-        /* --- HEADER & NAV --- */
-        header {
-            padding: 20px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            background: rgba(18, 0, 36, 0.95);
-            border-bottom: 1px solid #333;
-            backdrop-filter: blur(10px);
-        }
+        /* --- HEADER --- */
+        header { padding: 20px 0; position: fixed; width: 100%; top: 0; z-index: 1000; background: rgba(18, 0, 36, 0.95); border-bottom: 1px solid #333; backdrop-filter: blur(10px); }
         nav { display: flex; justify-content: space-between; align-items: center; }
-
-        .header-logo-text {
-            font-family: var(--font-head);
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
+        .header-logo-text { font-family: var(--font-head); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
         .nav-links { display: flex; gap: 40px; }
-        .nav-links a { 
-            font-size: 0.9rem; font-family: var(--font-sub); font-weight: 700; text-transform: uppercase; color: #fff; letter-spacing: 1px;
-        }
+        .nav-links a { font-size: 0.9rem; font-family: var(--font-sub); font-weight: 700; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .nav-links a:hover { color: var(--primary); }
         .mobile-only { display: none; }
         .mobile-menu-btn { display: none; font-size: 1.5rem; cursor: pointer; color: white; margin-left: 20px; }
 
-        /* ============================
-           SECTION: HERO 
-           ============================ */
-        
+        /* --- SECTIONS --- */
         .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            /* New Background: Abstract Neon City */
+            min-height: 100vh; display: flex; align-items: center; position: relative;
             background-image: url('https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/futurefunkworld-hero-bg.png');
-            background-size: cover;
-            background-position: center;
-            padding-top: 120px; 
-            padding-bottom: 50px;
+            background-size: cover; background-position: center; padding-top: 120px; padding-bottom: 50px;
         }
-        .hero::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(18,0,36,0.7) 0%, rgba(18,0,36,0.9) 100%);
-        }
-        
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(18,0,36,0.7) 0%, rgba(18,0,36,0.9) 100%); }
         .hero-content { position: relative; z-index: 2; max-width: 1000px; width: 100%; margin: 0 auto; text-align: center; }
-        
-        .hero-text-box {
-            padding: 50px;
-        }
-
         .hero h1 { 
             font-size: 5rem; line-height: 1; margin-bottom: 20px; 
-            background: -webkit-linear-gradient(#fff, #999);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background: -webkit-linear-gradient(#fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
         }
-        
-        .hero p { 
-            font-size: 1.3rem; color: var(--text-muted); margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;
-        }
 
-        /* FEATURED ARTIST SECTION */
         .featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        .artist-img-box {
-            width: 100%; aspect-ratio: 1/1; 
-            background: url('https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/madd3e-image-1.jpg'); border-radius: 20px;
-            position: relative; overflow: hidden;
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 30px rgba(255, 175, 0, 0.2);
-        }
+        .artist-img-box { width: 100%; aspect-ratio: 1/1; border-radius: 20px; position: relative; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 30px rgba(255, 175, 0, 0.2); }
         .artist-img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .artist-img-box:hover img { transform: scale(1.05); }
 
-        /* PLAYLIST SECTION */
-       	/* --- PLAYLIST SECTION --- */
-.playlist-card {
-    background: var(--bg-card);
-    border: 1px solid #333;
-    border-radius: 15px;
-    padding: 40px;
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-}
+        .playlist-card { background: var(--bg-card); border: 1px solid #333; border-radius: 15px; padding: 40px; max-width: 800px; margin: 0 auto; position: relative; }
+        .playlist-card::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: linear-gradient(45deg, var(--secondary), var(--primary)); z-index: -1; border-radius: 16px; }
+        .video-responsive { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; }
+        .video-responsive iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-/* This creates the glowing border effect */
-.playlist-card::before {
-    content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-    background: linear-gradient(45deg, var(--secondary), var(--primary));
-    z-index: -1; border-radius: 16px;
-}
-
-/* NEW: Makes the YouTube video responsive */
-.video-responsive {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
-    border-radius: 8px;
-    background: #000;
-}
-
-.video-responsive iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-        /* COMMUNITY HUB PREVIEW (New Section) */
-        .community-preview {
-            background: linear-gradient(90deg, #120024, #1f0a33);
-            border-top: 2px solid var(--accent);
-            border-bottom: 2px solid var(--accent);
-        }
-
-        /* MASTER CLASS SECTION (Moved) */
-        .academy-section { background: #000; }
+        .community-preview { background: linear-gradient(90deg, #120024, #1f0a33); border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }
+        
         .course-card { 
             background: url('https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/fingadelic-bg.webp');
-            background-size: cover;
-            border-radius: 20px;
-            padding: 80px 40px; position: relative;
-            text-align: center; max-width: 900px; margin: 0 auto;
-            overflow: hidden;
+            background-size: cover; border-radius: 20px; padding: 80px 40px; position: relative;
+            text-align: center; max-width: 900px; margin: 0 auto; overflow: hidden;
         }
-        .course-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 1;
-        }
+        .course-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1; }
         .course-content { position: relative; z-index: 2; }
 
-        /* CONTACT SECTIONS */
         .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
 
-        /* MESSAGE BOARD (LMS) - Styling Updates */
+        /* --- MESSAGE BOARD --- */
         .lms-container { display: grid; grid-template-columns: 300px 1fr; height: 100vh; padding-top: 85px; }
         .lms-sidebar { background: #0e001c; border-right: 1px solid #333; overflow-y: auto; display: flex; flex-direction: column; }
         .lms-module-header { padding: 15px 20px; background: #1a0033; color: var(--accent); font-size: 0.8rem; letter-spacing: 2px; font-weight: bold; }
+        .channel-item { padding: 15px 20px; cursor: pointer; color: #ccc; }
         .channel-item.active { background: rgba(255, 175, 0, 0.1); border-left: 3px solid var(--primary); color: var(--primary); }
-        .lms-content { padding: 40px; background: #080010; }
+        .lms-content { padding: 40px; background: #080010; overflow-y: auto; }
         .thread-box { background: #16002b; border: 1px solid #333; padding: 25px; border-radius: 8px; margin-bottom: 20px; }
 
-        /* MODALS */
+        /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .login-modal-box { background: #1f0a33; border: 2px solid var(--primary); width: 100%; max-width: 400px; padding: 40px; border-radius: 20px; text-align: center; position: relative; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; transition:0.3s;}
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; transition:0.3s; }
         .close-modal:hover { color: white; }
 
-        /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .mobile-only { display: block; }
-            .header-logo-text { font-size: 1rem; }
             .nav-links { position: fixed; top: 0; right: -100%; height: 100vh; width: 70%; background: #000; border-left: 2px solid var(--primary); flex-direction: column; justify-content: center; align-items: center; transition: 0.3s; z-index: 1000; }
             .nav-links.active { right: 0; display: flex; }
             .mobile-menu-btn { display: block; }
@@ -290,8 +150,6 @@
             .lms-sidebar { display: none; }
         }
     </style>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -299,15 +157,13 @@
         <div class="container">
             <nav>
                 <div class="header-logo-text"><i class="fas fa-record-vinyl fa-spin" style="margin-right: 10px; color: var(--accent);"></i> FFW</div>
-                
                 <ul class="nav-links" id="navLinks">
                     <li><a href="#" onclick="showSection('landing'); toggleMenu()">Home</a></li>
                     <li><a href="#playlist" onclick="showSection('landing'); toggleMenu()">Music</a></li>
                     <li><a href="#community-hub" onclick="showSection('landing'); toggleMenu()">Community</a></li>
                     <li><a href="#masterclass" onclick="showSection('landing'); toggleMenu()">Learn</a></li>
-                    <li style="margin-top:20px; font-size: 2rem; cursor:pointer;" onclick="toggleMenu()" class="mobile-only">&times;</li>
+                    <li style="margin-top:20px; font-size: 2rem; cursor:pointer;" onclick="toggleMenu()" class="mobile-only">×</li>
                 </ul>
-
                 <div style="display:flex; gap:15px; align-items:center;">
                     <button id="nav-login-btn" onclick="openLoginModal()" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.8rem;">Log In</button>
                     <div class="mobile-menu-btn" onclick="toggleMenu()">
@@ -319,7 +175,6 @@
     </header>
 
     <div id="landing-page">
-        
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
@@ -329,10 +184,8 @@
                         The definitive hub for the Future Funk revolution. 
                         Head-knockin' beats from the future teleported to your speakers.
                         Featuring the sounds of Fingazz, Madd3e, Beatslaya and many more!
-		<p>
-			<small>
-			(Not to be confused with the mis-labeled sub-genre of Vaporwave or Vaporboogie)
-                    </small>
+                    </p>
+                    <p><small>(Not to be confused with the mis-labeled sub-genre of Vaporwave or Vaporboogie)</small></p>
                     <div style="display:flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
                         <a href="#community-hub" class="btn btn-primary">Join The Movement</a>
                         <a href="#playlist" class="btn btn-secondary"><i class="fas fa-play"></i> Stream Mix</a>
@@ -347,83 +200,50 @@
                     <h4 style="color: var(--secondary);">Artist Spotlight</h4>
                     <h2>Featured <span class="highlight">Architect</span></h2>
                 </div>
-
                 <div class="featured-grid">
                     <div class="artist-img-box">
-    <img src="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/madd3e-image-1.jpg" alt="Madd3e">
-    
-    <div style="position: absolute; bottom: 20px; left: 20px; background: var(--primary); color: #000; padding: 5px 15px; font-weight: bold; border-radius: 4px;">
-        Madd3e
-    </div>
-</div>
+                        <img src="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/madd3e-image-1.jpg" alt="Madd3e">
+                        <div style="position: absolute; bottom: 20px; left: 20px; background: var(--primary); color: #000; padding: 5px 15px; font-weight: bold; border-radius: 4px;">Madd3e</div>
+                    </div>
                     <div class="artist-content">
                         <h2 style="color: white; font-size: 3rem;">Hyper <span style="color: var(--accent);">G</span></h2>
                         <h4 style="color: var(--text-muted); margin-bottom: 20px;">A true Future Funk Anthem</h4>
                         <p style="color: #ccc; margin-bottom: 30px; line-height: 1.8;">
                             Madd3e hits hard with a bass-heavy banger that bridges the gap between G-Funk and Cyberpunk. 
-                            "Hyper G" utilizes a head knocking drums and funky synth bass, combined with 8 bit video game-esque sounds to create a groove that is both nostalgic and unmistakably futuristic.
+                            "Hyper G" utilizes a head knocking drums and funky synth bass.
                         </p>
-                       <div style="display:flex; gap: 15px;">
-                             <button onclick="openArtistModal()" class="btn btn-secondary">Artist Profile</button>
-    
+                        <div style="display:flex; gap: 15px;">
+                            <button onclick="openArtistModal()" class="btn btn-secondary">Artist Profile</button>
                             <button onclick="shareSite()" class="btn btn-secondary" style="border-color: #333; color: #fff;">
-                             <i class="fas fa-share-alt"></i>
+                                <i class="fas fa-share-alt"></i>
                             </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-<section id="playlist" class="section-padding" style="background: #0f001e;">
-    <div class="container">
-        <div class="text-center" style="margin-bottom: 50px;">
-            <i class="fas fa-compact-disc fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2>Future Funk <span class="highlight-pink">Radio</span></h2>
-            <p style="color: var(--text-muted);">Curated selections from the underground.</p>
-        </div>
-
-        <div class="playlist-card" style="padding: 20px;">
-            <div class="video-responsive">
-                <iframe 
-                    width="560" 
-                    height="315" 
-                    src="https://www.youtube.com/embed/6wr-V3TinNM?list=PLzW7YCedfHjefx36xUB0Dmx07P05zCr3G" 
-                    title="Future Funk Playlist" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-                </iframe>
+        <section id="playlist" class="section-padding" style="background: #0f001e;">
+            <div class="container">
+                <div class="text-center" style="margin-bottom: 50px;">
+                    <i class="fas fa-compact-disc fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                    <h2>Future Funk <span class="highlight-pink">Radio</span></h2>
+                </div>
+                <div class="playlist-card" style="padding: 20px;">
+                    <div class="video-responsive">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/6wr-V3TinNM?list=PLzW7YCedfHjefx36xUB0Dmx07P05zCr3G" title="Playlist" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="https://www.youtube.com/playlist?list=PLzW7YCedfHjefx36xUB0Dmx07P05zCr3G" target="_blank" class="btn btn-secondary" style="font-size: 0.8rem; padding: 10px 25px;"><i class="fab fa-youtube"></i> Open in YouTube</a>
+                    </div>
+                </div>
             </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="https://www.youtube.com/playlist?list=PLzW7YCedfHjefx36xUB0Dmx07P05zCr3G" target="_blank" class="btn btn-secondary" style="font-size: 0.8rem; padding: 10px 25px;">
-                    <i class="fab fa-youtube"></i> Open in YouTube
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+        </section>
 
         <section id="community-hub" class="section-padding community-preview">
             <div class="container text-center">
                 <h4 style="color: var(--accent);">Our World</h4>
                 <h2 style="margin-bottom: 30px;">Join The <span class="highlight">Community</span></h2>
-                <p style="max-width: 600px; margin: 0 auto 40px; color: #ddd;">
-                    Gain access to exclusive message boards, share your tracks for feedback, and collaborate with other Future Funk architects. The password is "funk".
-                </p>
-                <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 40px;">
-                    <div style="text-align: center;">
-                        <i class="fas fa-users" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>
-                        <div style="font-weight: bold;">Connect</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <i class="fas fa-comment-dots" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>
-                        <div style="font-weight: bold;">Discuss</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <i class="fas fa-file-audio" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>
-                        <div style="font-weight: bold;">Share</div>
-                    </div>
-                </div>
                 <button onclick="openLoginModal()" class="btn btn-primary" style="padding: 20px 60px; font-size: 1.2rem;">ENTER THE HUB</button>
             </div>
         </section>
@@ -435,16 +255,7 @@
                     <div class="course-content">
                         <h4 style="color: var(--primary); margin-bottom: 10px; letter-spacing: 2px;">THE BLUEPRINT</h4>
                         <h2 style="font-size: 3rem; margin-bottom: 20px; color: white;">Future Funk <span style="color: var(--secondary);">4 All</span></h2>
-                        <p style="color: #eee; margin-bottom: 40px; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                            Ready to stop listening and start creating? Learn directly from <strong>Fingazz</strong>. 
-                            Master the talkbox and leading Future Funk pioneer.
-                        </p>
-                        
                         <a href="https://www.fingadelic.com" target="_blank" class="btn btn-secondary" style="background: white; color: black; border: none; padding: 20px 50px; font-size: 1.2rem;">LEVEL UP NOW</a>
-                        
-                        <div style="margin-top: 30px; color: #aaa; font-size: 0.9rem;">
-                            <i class="fas fa-external-link-alt"></i> Redirects to Fingadelic.com
-                        </div>
                     </div>
                 </div>
             </div>
@@ -463,16 +274,12 @@
                             <i class="fas fa-envelope" style="color: var(--primary); margin-right: 15px;"></i>
                             <span style="color: #fff;">submissions@futurefunkworld.com</span>
                         </div>
-                        <div>
-                            <i class="fas fa-map-marker-alt" style="color: var(--secondary); margin-right: 15px;"></i>
-                            <span style="color: #fff;">Los Angeles, CA / Tokyo, JP</span>
-                        </div>
                     </div>
                     <div>
                         <form onsubmit="event.preventDefault(); alert('Transmission Received.');">
-                            <div class="form-group"><label class="form-label">Identity</label><input type="text" class="form-input" placeholder="Name or Alias"></div>
-                            <div class="form-group"><label class="form-label">Comms Link</label><input type="email" class="form-input" placeholder="email@address.com"></div>
-                            <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Enter transmission..."></textarea></div>
+                            <div class="form-group"><input type="text" class="form-input" placeholder="Name or Alias"></div>
+                            <div class="form-group"><input type="email" class="form-input" placeholder="email@address.com"></div>
+                            <div class="form-group"><textarea class="form-textarea" placeholder="Enter transmission..."></textarea></div>
                             <button type="submit" class="btn btn-primary" style="width: 100%;">Send Transmission</button>
                         </form>
                     </div>
@@ -483,7 +290,7 @@
         <footer style="background:#080010; padding:60px 0; border-top:1px solid #333; text-align:center;">
             <div class="container">
                 <div style="font-family: var(--font-head); font-weight: 900; font-size: 1.5rem; color: var(--text-muted); margin-bottom: 20px;">FFW</div>
-                <p style="color:#666;">&copy; 2026 Future Funk World. All rights reserved.</p>
+                <p style="color:#666; font-size: 0.75rem;">© 2026 Future Funk World. All rights reserved.</p>
             </div>
         </footer>
     </div>
@@ -491,109 +298,81 @@
     <div id="community-page" class="hidden">
         <div class="lms-container">
             <div class="lms-sidebar">
-   	        <div style="padding: 20px; border-bottom: 1px solid #333;">
+                <div style="padding: 20px; border-bottom: 1px solid #333;">
                     <h5 style="color: var(--primary);">USER ID:</h5>
-        	    <div id="user-display-name" style="color: white; font-weight: bold;">Guest_User</div>
-    		</div>
-                
+                    <div id="user-display-name" style="color: white; font-weight: bold;">Guest_User</div>
+                </div>
                 <div class="lms-module-header">CHANNELS</div>
-                <div class="channel-item active"><div><i class="fas fa-hashtag" style="margin-right:10px;"></i> General</div></div>
-                <div class="channel-item"><div><i class="fas fa-music" style="margin-right:10px;"></i> Track_IDs</div></div>
-                <div class="channel-item"><div><i class="fas fa-calendar-alt" style="margin-right:10px;"></i> Events</div></div>
+                <div class="channel-item active"><div><i class="fas fa-hashtag"></i> General</div></div>
             </div>
-            
             <div class="lms-content">
-    <h2 style="color: white; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px;">General Discussion</h2>
-    
-    <div id="chat-container" style="height: 400px; overflow-y: auto; margin-bottom: 20px;">
-        </div>
-    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333;">
-        </div>
-</div>
-		<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333;">
-    <div class="form-group">
-        <textarea id="chat-input" class="form-textarea" placeholder="Type a message..." style="min-height: 80px;"></textarea>
-    </div>
-    <button onclick="sendMessage()" class="btn btn-primary">Post Message</button>
-</div>
+                <h2 style="color: white; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px;">General Discussion</h2>
+                <div id="chat-container" style="height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333;">
+                    <div class="form-group"><textarea id="chat-input" class="form-textarea" placeholder="Type a message..." style="min-height: 80px;"></textarea></div>
+                    <button onclick="sendMessage()" class="btn btn-primary">Post Message</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="login-modal" class="modal-overlay">
-    <div class="login-modal-box">
-        <div class="close-modal" onclick="closeLoginModal()">&times;</div>
-        
-        <h3 id="auth-title" style="color: var(--primary); margin-bottom: 10px;">ACCESS GRID</h3>
-        <p id="auth-subtitle" style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;">Enter credentials to connect.</p>
-        
-        <div id="username-container" class="form-group" style="display:none;">
-            <input type="text" id="auth-username" class="form-input" placeholder="Choose a Username">
-        </div>
+        <div class="login-modal-box">
+            <div class="close-modal" onclick="closeLoginModal()">×</div>
+            <h3 id="auth-title" style="color: var(--primary); margin-bottom: 10px;">ACCESS GRID</h3>
+            <p id="auth-subtitle" style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;">Enter credentials to connect.</p>
+            
+            <div id="username-container" class="form-group" style="display:none;">
+                <input type="text" id="auth-username" class="form-input" placeholder="Choose a Username">
+            </div>
+            <div class="form-group"><input type="email" id="auth-email" class="form-input" placeholder="Email Address"></div>
+            <div class="form-group"><input type="password" id="auth-password" class="form-input" placeholder="Password"></div>
 
-        <div class="form-group">
-            <input type="email" id="auth-email" class="form-input" placeholder="Email Address">
+            <button id="auth-submit-btn" onclick="handleLogin()" class="btn btn-primary" style="width: 100%;">LOG IN</button>
+            
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #888;">
+                <span id="auth-toggle-msg">First time here?</span>
+                <span onclick="toggleAuthMode()" style="color: var(--secondary); cursor: pointer; text-decoration: underline; margin-left: 5px; font-weight: bold;">Initialize Protocol (Sign Up)</span>
+            </div>
+            <p id="auth-message" style="margin-top: 15px; font-size: 0.8rem; color: var(--accent);"></p>
         </div>
-        <div class="form-group">
-            <input type="password" id="auth-password" class="form-input" placeholder="Password">
-        </div>
-
-        <button id="auth-submit-btn" onclick="handleLogin()" class="btn btn-primary" style="width: 100%;">LOG IN</button>
-        
-        <div style="margin-top: 20px; font-size: 0.8rem; color: #888;">
-            <span id="auth-toggle-msg">First time here?</span>
-            <span onclick="toggleAuthMode()" style="color: var(--secondary); cursor: pointer; text-decoration: underline; margin-left: 5px; font-weight: bold;">
-                Initialize Protocol (Sign Up)
-            </span>
-        </div>
-
-        <p id="auth-message" style="margin-top: 15px; font-size: 0.8rem; color: var(--accent);"></p>
     </div>
-</div>
-	<div id="artist-modal" class="modal-overlay">
-    <div class="login-modal-box" style="text-align: left; max-width: 500px;">
-        <div class="close-modal" onclick="closeArtistModal()">&times;</div>
-        
-        <div style="display:flex; gap: 20px; align-items:center; margin-bottom: 20px;">
-            <img src="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/madd3e-image-1.jpg" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;">
-            <div>
-                <h2 style="font-size: 1.5rem; margin: 0; color: white;">Madd3e</h2>
-                <div style="color: var(--accent); font-size: 0.9rem;">Rome, Italy 🇮🇹</div>
+
+    <div id="artist-modal" class="modal-overlay">
+        <div class="login-modal-box" style="text-align: left; max-width: 500px;">
+            <div class="close-modal" onclick="closeArtistModal()">×</div>
+            <div style="display:flex; gap: 20px; align-items:center; margin-bottom: 20px;">
+                <img src="https://cdn.jsdelivr.net/gh/fingadelic/futurefunkworld-site@main/images/madd3e-image-1.jpg" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;">
+                <div>
+                    <h2 style="font-size: 1.5rem; margin: 0; color: white;">Madd3e</h2>
+                    <div style="color: var(--accent); font-size: 0.9rem;">Rome, Italy 🇮🇹</div>
+                </div>
+            </div>
+            <p style="color: #ccc; margin-bottom: 25px; font-size: 0.9rem; line-height: 1.6;">
+                A pioneer of the modern funk sound, Madd3e blends high-energy talkbox leads with thumping 808s.
+            </p>
+            <h4 style="color: var(--primary); font-size: 0.8rem; margin-bottom: 10px;">TOP LINKS</h4>
+            <div style="display: grid; gap: 10px;">
+                <a href="https://soundcloud.com/madd3e" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px;"><i class="fab fa-soundcloud"></i> SoundCloud</a>
+                <a href="https://open.spotify.com/artist/0" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px; border-color: #1DB954; color: #1DB954;"><i class="fab fa-spotify"></i> Spotify</a>
             </div>
         </div>
-
-        <p style="color: #ccc; margin-bottom: 25px; font-size: 0.9rem; line-height: 1.6;">
-            A pioneer of the modern funk sound, Madd3e blends high-energy talkbox leads with thumping 808s. With releases on major funk labels, he has defined the "Cyber Funk" aesthetic.
-        </p>
-
-        <h4 style="color: var(--primary); font-size: 0.8rem; margin-bottom: 10px;">TOP LINKS</h4>
-        <div style="display: grid; gap: 10px;">
-            <a href="https://soundcloud.com/madd3e" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px;">
-                <i class="fab fa-soundcloud"></i> SoundCloud
-            </a>
-            <a href="https://open.spotify.com/artist/madd3e" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px; border-color: #1DB954; color: #1DB954;">
-                <i class="fab fa-spotify"></i> Spotify
-            </a>
-            <a href="https://instagram.com/madd3e" target="_blank" class="btn btn-secondary" style="text-align: center; border-radius: 8px; border-color: #E1306C; color: #E1306C;">
-                <i class="fab fa-instagram"></i> Instagram
-            </a>
-        </div>
     </div>
-</div>
-</div>
 
 <script>
     // --- 1. CONFIGURATION ---
     const SUPABASE_URL = 'https://emqrmhnnvdjwladrbpbw.supabase.co';
-    // REPLACE THIS WITH YOUR ACTUAL KEY IF NEEDED
-    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; 
+    
+    // !!! IMPORTANT: PASTE YOUR KEY HERE !!!
+    // It is the "anon" key from your Supabase Dashboard -> Settings -> API
+    const SUPABASE_KEY = 'sb_secret_0YB9VV5uiF7Z33vN_47ozA_U-AmuEAf'; 
     
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- 2. NAVIGATION & UI LOGIC ---
+    // --- 2. NAVIGATION ---
     function showSection(sectionId) {
         document.getElementById('landing-page').classList.add('hidden');
         document.getElementById('community-page').classList.add('hidden');
-        
         if(sectionId === 'landing') {
             document.getElementById('landing-page').classList.remove('hidden');
             window.scrollTo(0,0);
@@ -601,25 +380,17 @@
             checkSession(); 
         }
     }
-    
     function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
-    
     function openLoginModal() { 
         document.getElementById('login-modal').style.display = 'flex'; 
-        
-        // Reset to "Log In" mode every time it opens
-        isLoginMode = false; 
-        toggleAuthMode();    
+        isLoginMode = false; toggleAuthMode(); 
     }
-
     function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
 
-    // --- 3. TOGGLE UI LOGIC (Log In vs Sign Up) ---
+    // --- 3. LOGIN TOGGLE ---
     let isLoginMode = true;
-
     function toggleAuthMode() {
-        isLoginMode = !isLoginMode; // Flip the switch
-        
+        isLoginMode = !isLoginMode;
         const title = document.getElementById('auth-title');
         const subtitle = document.getElementById('auth-subtitle');
         const userContainer = document.getElementById('username-container');
@@ -627,213 +398,106 @@
         const toggleMsg = document.getElementById('auth-toggle-msg');
         const toggleLink = document.querySelector('span[onclick="toggleAuthMode()"]');
         const msg = document.getElementById('auth-message');
-
-        // Clear any old error messages
         if(msg) msg.innerText = "";
 
         if (isLoginMode) {
-            // SWITCH TO LOG IN MODE
-            if(title) title.innerText = "ACCESS GRID";
-            if(subtitle) subtitle.innerText = "Enter credentials to connect.";
-            if(userContainer) userContainer.style.display = "none"; 
-            
-            if(btn) {
-                btn.innerText = "LOG IN";
-                // IMPORTANT: We assign the function, we don't call it
-                btn.onclick = handleLogin; 
-            }
-            
-            if(toggleMsg) toggleMsg.innerText = "First time here?";
-            if(toggleLink) toggleLink.innerText = "Initialize Protocol (Sign Up)";
+            title.innerText = "ACCESS GRID"; subtitle.innerText = "Enter credentials to connect.";
+            userContainer.style.display = "none";
+            btn.innerText = "LOG IN"; btn.onclick = handleLogin;
+            toggleMsg.innerText = "First time here?"; toggleLink.innerText = "Initialize Protocol (Sign Up)";
         } else {
-            // SWITCH TO SIGN UP MODE
-            if(title) title.innerText = "NEW RECRUIT";
-            if(subtitle) subtitle.innerText = "Create your digital identity.";
-            if(userContainer) userContainer.style.display = "block"; 
-            
-            if(btn) {
-                btn.innerText = "INITIATE SIGN UP";
-                btn.onclick = handleSignUp; 
-            }
-            
-            if(toggleMsg) toggleMsg.innerText = "Already have an account?";
-            if(toggleLink) toggleLink.innerText = "Return to Log In";
+            title.innerText = "NEW RECRUIT"; subtitle.innerText = "Create your digital identity.";
+            userContainer.style.display = "block";
+            btn.innerText = "INITIATE SIGN UP"; btn.onclick = handleSignUp;
+            toggleMsg.innerText = "Already have an account?"; toggleLink.innerText = "Return to Log In";
         }
     }
 
-    // --- 4. AUTHENTICATION LOGIC (STRICT) ---
-    
-    // Note the 'async' keyword here. This fixes your syntax error.
+    // --- 4. AUTH LOGIC ---
     async function handleSignUp() {
-        const usernameInput = document.getElementById('auth-username');
-        const emailInput = document.getElementById('auth-email');
-        const passwordInput = document.getElementById('auth-password');
+        const username = document.getElementById('auth-username').value.trim();
+        const email = document.getElementById('auth-email').value.trim();
+        const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-message');
 
-        const username = usernameInput.value.trim();
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-
-        // BOUNCERS (Validation)
-        if (!username) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ You must create a Username.";
-            usernameInput.focus();
-            return;
-        }
-        if (!email) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Email is required.";
-            emailInput.focus();
-            return;
-        }
-        if (!password || password.length < 6) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Password must be 6+ chars.";
-            passwordInput.focus();
-            return;
-        }
+        if (!username) { msg.innerText = "⚠️ Create a Username."; return; }
+        if (!email) { msg.innerText = "⚠️ Email required."; return; }
+        if (!password || password.length < 6) { msg.innerText = "⚠️ Password 6+ chars."; return; }
 
         const { data, error } = await sbClient.auth.signUp({ 
-            email, 
-            password,
-            options: {
-                data: { username: username }
-            }
+            email, password, options: { data: { username: username } }
         });
 
-        if (error) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "Error: " + error.message;
-        } else {
-            msg.style.color = 'var(--accent)';
-            msg.innerText = "Success! Check your email.";
-        }
+        if (error) { msg.style.color = 'var(--secondary)'; msg.innerText = error.message; }
+        else { msg.style.color = 'var(--accent)'; msg.innerText = "Success! Check email."; }
     }
 
-    // Note the 'async' keyword here too.
     async function handleLogin() {
-        const emailInput = document.getElementById('auth-email');
-        const passwordInput = document.getElementById('auth-password');
+        const email = document.getElementById('auth-email').value.trim();
+        const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-message');
 
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-
-        if (!email) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Enter your email.";
-            emailInput.focus();
-            return;
-        }
-        if (!password) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "⚠️ Enter your password.";
-            passwordInput.focus();
-            return;
-        }
+        if (!email || !password) { msg.innerText = "⚠️ Credentials missing."; return; }
 
         const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
-
-        if (error) {
-            msg.style.color = 'var(--secondary)';
-            msg.innerText = "Error: " + error.message;
-        } else {
-            msg.style.color = 'var(--accent)';
-            msg.innerText = "Access Granted.";
-            setTimeout(() => {
-                closeLoginModal();
-                showMessageBoard(data.user);
-            }, 500);
+        if (error) { msg.style.color = 'var(--secondary)'; msg.innerText = error.message; }
+        else { 
+            msg.style.color = 'var(--accent)'; msg.innerText = "Access Granted.";
+            setTimeout(() => { closeLoginModal(); showMessageBoard(data.user); }, 500);
         }
     }
 
     async function checkSession() {
         const { data: { session } } = await sbClient.auth.getSession();
-        if (session) {
-            showMessageBoard(session.user);
-        } else {
-            openLoginModal();
-        }
+        if (session) showMessageBoard(session.user);
+        else openLoginModal();
     }
 
-    // --- 5. MESSAGE BOARD LOGIC ---
+    // --- 5. MESSAGE BOARD ---
     function showMessageBoard(user) {
         document.getElementById('landing-page').classList.add('hidden');
         document.getElementById('community-page').classList.remove('hidden');
         
         let displayName = "Member";
-        if(user.user_metadata && user.user_metadata.username) {
-            displayName = user.user_metadata.username;
-        } else if (user.email) {
-            displayName = user.email.split('@')[0];
-        }
+        if(user.user_metadata && user.user_metadata.username) displayName = user.user_metadata.username;
+        else if (user.email) displayName = user.email.split('@')[0];
         
-        // Ensure the Sidebar ID exists in HTML before setting text
         const nameDisplay = document.getElementById('user-display-name');
         if(nameDisplay) nameDisplay.innerText = displayName;
 
         fetchMessages();
-        
-        sbClient
-        .channel('public:messages')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-            appendMessageToUI(payload.new);
-        })
+        sbClient.channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => { appendMessageToUI(payload.new); })
         .subscribe();
     }
 
     async function fetchMessages() {
-        const { data, error } = await sbClient
-            .from('messages')
-            .select('*')
-            .order('created_at', { ascending: true });
-            
+        const { data, error } = await sbClient.from('messages').select('*').order('created_at', { ascending: true });
         const container = document.getElementById('chat-container');
-        if(container) container.innerHTML = ''; 
-        
-        if(data) {
-            data.forEach(msg => appendMessageToUI(msg));
-        }
+        if(container) container.innerHTML = '';
+        if(data) data.forEach(msg => appendMessageToUI(msg));
     }
 
     async function sendMessage() {
         const input = document.getElementById('chat-input');
         const content = input.value;
         if(!content) return;
-
         const { data: { user } } = await sbClient.auth.getUser();
 
         if(user) {
             let safeUsername = "Anonymous";
-            if (user.user_metadata && user.user_metadata.username) {
-                safeUsername = user.user_metadata.username;
-            } else if (user.email) {
-                safeUsername = user.email.split('@')[0];
-            }
+            if (user.user_metadata && user.user_metadata.username) safeUsername = user.user_metadata.username;
+            else if (user.email) safeUsername = user.email.split('@')[0];
 
-            const { error } = await sbClient.from('messages').insert([
-                { 
-                    content: content, 
-                    email: user.email,
-                    username: safeUsername 
-                }
-            ]);
-            
-            if (error) {
-                alert("Error: " + error.message);
-            } else {
-                input.value = ''; 
-            }
-        } else {
-            alert("Login required.");
-        }
+            const { error } = await sbClient.from('messages').insert([{ content: content, email: user.email, username: safeUsername }]);
+            if (error) alert("Error: " + error.message);
+            else input.value = ''; 
+        } else alert("Login required.");
     }
 
     function appendMessageToUI(msg) {
         const container = document.getElementById('chat-container');
         if (!container || !msg) return;
-
         const name = msg.username || (msg.email ? msg.email.split('@')[0] : "Anon");
         const initial = name.charAt(0).toUpperCase();
         
@@ -847,43 +511,21 @@
                     </div>
                 </div>
                 <p style="color: #ddd;">${msg.content}</p>
-            </div>
-        `;
+            </div>`;
         container.insertAdjacentHTML('beforeend', html);
         container.scrollTop = container.scrollHeight; 
-        // --- ARTIST MODAL FUNCTIONS ---
-    function openArtistModal() {
-        document.getElementById('artist-modal').style.display = 'flex';
     }
 
-    function closeArtistModal() {
-        document.getElementById('artist-modal').style.display = 'none';
-    }
+    // --- 6. ARTIST & SHARE ---
+    function openArtistModal() { document.getElementById('artist-modal').style.display = 'flex'; }
+    function closeArtistModal() { document.getElementById('artist-modal').style.display = 'none'; }
 
-    // --- SHARE FUNCTION ---
     async function shareSite() {
-        const shareData = {
-            title: 'Future Funk World',
-            text: 'Check out the ultimate hub for Future Funk music!',
-            url: window.location.href
-        };
-
-        // 1. Try Native Mobile Share (Works on phones)
-        if (navigator.share) {
-            try {
-                await navigator.share(shareData);
-            } catch (err) {
-                console.log('Share canceled');
-            }
-        } 
-        // 2. Fallback: Copy to Clipboard (Works on Desktop)
-        else {
-            try {
-                await navigator.clipboard.writeText(window.location.href);
-                alert("URL copied to clipboard! Share the funk. 💿");
-            } catch (err) {
-                alert("Could not copy link manually.");
-            }
+        const shareData = { title: 'Future Funk World', text: 'Check out the ultimate hub!', url: window.location.href };
+        if (navigator.share) { try { await navigator.share(shareData); } catch (err) {} } 
+        else { 
+            try { await navigator.clipboard.writeText(window.location.href); alert("URL copied!"); } 
+            catch (err) { alert("Could not copy link."); } 
         }
     }
 </script>
