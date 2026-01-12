@@ -363,10 +363,11 @@
     // --- 1. CONFIGURATION ---
     const SUPABASE_URL = 'https://emqrmhnnvdjwladrbpbw.supabase.co';
     
-    // !!! IMPORTANT: PASTE YOUR KEY HERE !!!
-    // It is the "anon" key from your Supabase Dashboard -> Settings -> API
-    const SUPABASE_KEY = 'sb_secret_0YB9VV5uiF7Z33vN_47ozA_U-AmuEAf'; 
+    // IMPORTANT: REPLACE THIS WITH THE 'ANON' PUBLIC KEY.
+    // It MUST start with "eyJ..."
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtcXJtaG5udmRqd2xhZHJicGJ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODE2Mzk1MCwiZXhwIjoyMDgzNzM5OTUwfQ.gyQxBJAjOy1VOng1qFJovo0QzyvEq8WbMGvq1pbyaNcERE'; 
     
+    // Create client
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // --- 2. NAVIGATION ---
