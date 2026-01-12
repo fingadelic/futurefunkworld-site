@@ -521,8 +521,11 @@
     <div class="login-modal-box">
         <div class="close-modal" onclick="closeLoginModal()">&times;</div>
         <h3 style="color: var(--primary); margin-bottom: 10px;">IDENTIFY YOURSELF</h3>
-        <p style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;">Join the database to access the hub.</p>
+        <p style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;">Join the community to access the hub.</p>
         
+        <div class="form-group">
+        <input type="text" id="auth-username" class="form-input" placeholder="Choose a Username">
+    </div>
         <div class="form-group">
             <input type="email" id="auth-email" class="form-input" placeholder="Email Address">
         </div>
@@ -541,17 +544,13 @@
 <script>
     // --- 1. CONFIGURATION ---
     const SUPABASE_URL = 'https://emqrmhnnvdjwladrbpbw.supabase.co';
-    
-    // IMPORTANT: Replace this with the "anon" key from Supabase Dashboard -> Settings -> API.
-    // It should start with "eyJ..."
+    // KEEP YOUR ANON KEY HERE
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtcXJtaG5udmRqd2xhZHJicGJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjM5NTAsImV4cCI6MjA4MzczOTk1MH0.VIwEyNakJ85lWtbIiRBHwsI3eZPUvZANC8mXt1bkvNA'; 
     
-    // Initialize the client. We name it 'sbClient' to avoid conflicting with the library name.
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // --- 2. NAVIGATION & UI LOGIC ---
     function showSection(sectionId) {
-        // Hide all pages
         document.getElementById('landing-page').classList.add('hidden');
         document.getElementById('community-page').classList.add('hidden');
         
@@ -559,7 +558,6 @@
             document.getElementById('landing-page').classList.remove('hidden');
             window.scrollTo(0,0);
         } else if(sectionId === 'community') {
-            // Check session before showing community
             checkSession(); 
         }
     }
@@ -572,9 +570,24 @@
     async function handleSignUp() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
+        // NEW: Get the username
+        const username = document.getElementById('auth-username').value; 
         const msg = document.getElementById('auth-message');
 
-        const { data, error } = await sbClient.auth.signUp({ email, password });
+        if(!username) {
+            msg.style.color = 'var(--secondary)';
+            msg.innerText = "Please choose a username.";
+            return;
+        }
+
+        // NEW: We save the username in the user's "metadata"
+        const { data, error } = await sbClient.auth.signUp({ 
+            email, 
+            password,
+            options: {
+                data: { username: username }
+            }
+        });
 
         if (error) {
             msg.style.color = 'var(--secondary)';
@@ -615,14 +628,18 @@
         document.getElementById('landing-page').classList.add('hidden');
         document.getElementById('community-page').classList.remove('hidden');
         
-        // Update Sidebar Name
-        const displayName = user.email ? user.email.split('@')[0] : "Member";
+        // NEW: Try to get username from metadata, fallback to email if missing
+        let displayName = "Member";
+        if(user.user_metadata && user.user_metadata.username) {
+            displayName = user.user_metadata.username;
+        } else if (user.email) {
+            displayName = user.email.split('@')[0];
+        }
+        
         document.getElementById('user-display-name').innerText = displayName;
 
-        // Load Messages
         fetchMessages();
         
-        // Subscribe to NEW messages (Realtime)
         sbClient
         .channel('public:messages')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
@@ -638,12 +655,10 @@
             .order('created_at', { ascending: true });
             
         const container = document.getElementById('chat-container');
-        container.innerHTML = ''; // Clear old messages
+        container.innerHTML = ''; 
         
         if(data) {
             data.forEach(msg => appendMessageToUI(msg));
-        } else if (error) {
-            console.error("Error fetching messages:", error);
         }
     }
 
@@ -655,10 +670,23 @@
         const { data: { user } } = await sbClient.auth.getUser();
 
         if(user) {
-            await sbClient.from('messages').insert([
-                { content: content, email: user.email }
+            // NEW: Get the username from the user's saved data
+            const username = user.user_metadata.username || user.email.split('@')[0];
+
+            // NEW: Send 'username' along with content and email
+            const { error } = await sbClient.from('messages').insert([
+                { 
+                    content: content, 
+                    email: user.email,
+                    username: username 
+                }
             ]);
-            input.value = ''; // Clear input
+            
+            if (error) {
+                alert("Error: " + error.message);
+            } else {
+                input.value = ''; 
+            }
         } else {
             alert("You must be logged in to post.");
         }
@@ -666,10 +694,10 @@
 
     function appendMessageToUI(msg) {
         const container = document.getElementById('chat-container');
-        // Handle cases where email might be missing or msg is null
-        if (!msg || !msg.email) return;
+        if (!msg) return;
 
-        const name = msg.email.split('@')[0];
+        // NEW: Prefer the saved username, fallback to email if it's an old message
+        const name = msg.username || (msg.email ? msg.email.split('@')[0] : "Anon");
         const initial = name.charAt(0).toUpperCase();
         
         const html = `
